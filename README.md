@@ -64,7 +64,7 @@ This project uses `python-dotenv` for managing sensitive credentials and hardwar
 ## Usage
 
 1. **Provide Data:** 
-   Upload your raw data `.txt` file into the `text file` folder located at the root of this repository.
+   Upload your raw data `.txt` file into the `raw_data` folder located at the root of this repository.
    
 2. **Run the Pipeline:**
    Navigate to the desired pipeline and execute the main script:
@@ -90,10 +90,8 @@ This will automatically connect to your configured `SERIAL_PORT` and listen for 
 
 ```text
 Backend/
-├── text file/
+├── raw_data/
 │   ├── (Upload raw .txt data files here)
-│   ├── anxiety/ (Output directory)
-│   └── stress/  (Output directory)
 ├── anxiety/
 │   ├── main.py: Entry point for anxiety pipeline.
 │   ├── data_logger.py: Connects to ESP32 over serial.

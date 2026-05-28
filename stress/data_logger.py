@@ -17,7 +17,7 @@ DURATION = 600  # 10 minutes
 CHUNK_SIZE = 4096
 
 
-from firebase_upload import fetch_user_id
+from firebase_upload import fetch_user_id, fetch_user_details
 
 # ---------------- USER INFO ----------------
 def get_user_info():
@@ -25,14 +25,22 @@ def get_user_info():
     print("\n--- Subject Information ---")
     
     user_id = fetch_user_id()
+    user_details = None
     if user_id:
         print(f"Fetched User ID from Firebase: {user_id}")
+        user_details = fetch_user_details(user_id)
     else:
         print("No User ID found in Firebase.")
 
-    name = input("Enter User Name: ")
-    age = input("Enter Age: ")
-    gender = input("Enter Gender: ")
+    if user_details:
+        print("Fetched user details from Firebase:")
+        print(f"  First Name: {user_details.get('firstname')}")
+        print(f"  Age: {user_details.get('age')}")
+        print(f"  Gender: {user_details.get('gender')}")
+
+    name = user_details.get('firstname') if user_details and user_details.get('firstname') else input("Enter First Name: ")
+    age = user_details.get('age') if user_details and user_details.get('age') else input("Enter Age: ")
+    gender = user_details.get('gender') if user_details and user_details.get('gender') else input("Enter Gender: ")
 
     print("---------------------------\n")
 

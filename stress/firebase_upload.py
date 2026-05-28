@@ -31,38 +31,49 @@ def fetch_user_id():
         print(f"Failed to fetch user ID: {e}")
         return None
 
-def get_user_name():
+
+def fetch_user_details(uid):
     try:
-        with open('data/user_info.txt', 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.startswith("Name:"):
-                    return line.split("Name:")[1].strip()
-    except Exception:
-        pass
-    return "Unknown User"
+        if not uid:
+            return None
+        ref = db.reference(f'active_session/{uid}')
+        details = ref.get()
+        if not details:
+            return None
+        return {
+            'firstname': details.get('firstname'),
+            'age': details.get('age'),
+            'gender': details.get('gender')
+        }
+    except Exception as e:
+        print(f"Failed to fetch user details for {uid}: {e}")
+        return None
+
 
 def upload_result(result_df, uid=None):
     if result_df.empty:
         print("No predictions to upload.")
         return
         
+    if not uid:
+        print("No active session found. Skipping Firebase upload.")
+        return
+    
     try:
-        # We upload the most recent window result to match the Colab logic
+        # Extract the most recent prediction window
         latest_data = result_df.iloc[-1].to_dict()
         
-        filtered_data = {
-            'Stress_Status': latest_data.get('Stress_Status'),
-            'Predicted_Label': latest_data.get('Predicted_Label')
-        }
+        # Map Predicted_Label to stress_detected (0 = no stress, 1 = stress detected)
+        stress_detected = latest_data.get('Predicted_Label')
         
-        if uid:
-            ref = db.reference(f'stress_monitoring/{uid}')
-            ref.set(filtered_data)
-            db.reference(f'active_session/{uid}').update({'status': 'done'})
-            print(f'Successfully uploaded prediction for {filtered_data["User_Name"]} to stress_monitoring/{uid}!')
-        else:
-            ref = db.reference('stress_monitoring/latest')
-            ref.set(filtered_data)
-            print(f'Successfully uploaded latest prediction for {filtered_data["User_Name"]} to Firebase!')
+        # Upload to active_session/{uid}
+        ref = db.reference(f'active_session/{uid}')
+        ref.update({
+            'stress_detected': stress_detected,
+            'status': 'done'
+        })
+        
+        stress_label = 'Stress detected' if stress_detected == 1 else 'No stress detected'
+        print(f'Successfully uploaded {stress_label} to active_session/{uid}!')
     except Exception as e:
         print(f"Failed to upload to Firebase: {e}")

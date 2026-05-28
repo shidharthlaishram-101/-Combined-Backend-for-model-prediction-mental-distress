@@ -19,7 +19,6 @@ def setup_folders():
         'models',
         'firebase',
         text_dir,
-        f'{text_dir}/anxiety'
     ]
     for folder in folders:
         os.makedirs(folder, exist_ok=True)
@@ -30,8 +29,8 @@ if __name__ == "__main__":
     print("STEP 1 - Subject Information")
     get_user_info()
     
-    text_dir = "../text file"
-    output_dir = "../text file/anxiety"
+    text_dir = "../raw_data"
+    # output_dir = "../raw_data/anxiety"
     
     txt_files = [f for f in os.listdir(text_dir) if f.endswith('.txt')]
     if not txt_files:
@@ -70,9 +69,9 @@ if __name__ == "__main__":
                 uid = fetch_user_id()
                 if uid:
                     print(f"Active session found with UID: {uid}")
+                    upload_result(result_df, uid=uid)
                 else:
-                    print("No active pending session found. Uploading to latest.")
-                upload_result(result_df, uid=uid)
+                    print("No active session found. Skipping Firebase upload.")
                 print('\nFULL PIPELINE COMPLETED')
             else:
                 print("Prediction failed.")
