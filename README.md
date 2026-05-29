@@ -76,6 +76,28 @@ This project uses `python-dotenv` for managing sensitive credentials and hardwar
 3. **Provide Subject Information:** 
    The prompt will ask for your `Name`, `Age`, and `Gender`. This information will be saved to `data/user_info.txt` and attached to the final Firebase upload.
 
+## Combined Pipeline (Anxiety + Stress)
+
+A convenience runner is provided at the repository root to execute both pipelines sequentially and handle shared files and uploads:
+
+- **Script:** `run_both_stress_anxiety.py`
+- **Behavior:**
+   - Looks for a raw `.txt` file in the repository `raw_data/` folder.
+   - Converts and cleans the data to `data/cleaned_output.csv`.
+   - Runs preprocessing, feature extraction, and prediction for both `anxiety` and `stress` pipelines.
+   - Writes processed artifacts to `data/processed/` and final predictions to `data/predictions/`.
+   - Attempts to fetch an active Firebase UID and upload non-empty results for each pipeline.
+
+To run the combined pipeline from the repo root:
+
+```bash
+python run_both_stress_anxiety.py
+```
+
+Notes:
+- Ensure you have placed your raw `.txt` file in `raw_data/` before running.
+- If no active Firebase session (UID not found), uploads are skipped but CSV outputs are still generated.
+
 ### Running the automated Serial Logger (Optional)
 
 If you want the Python script to directly listen to the ESP32 rather than manually dropping in the `.txt` file:
@@ -104,6 +126,7 @@ Backend/
 │   ├── models/ (Pre-trained models)
 │   └── data/ (Auto-generated folder)
 └── stress/
+   └── run_both_stress_anxiety.py: Combined runner to execute both pipelines from repository root.
     ├── main.py: Entry point for stress pipeline.
     ├── data_logger.py: Connects to ESP32 over serial.
     ├── txt_to_csv_converter.py

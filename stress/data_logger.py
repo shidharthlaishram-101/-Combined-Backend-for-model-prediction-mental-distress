@@ -2,6 +2,8 @@ import serial
 import time
 import os
 from dotenv import load_dotenv
+import sys
+sys.path.insert(0, os.path.dirname(__file__)) #important for run_both.py to find this module
 
 load_dotenv()
 

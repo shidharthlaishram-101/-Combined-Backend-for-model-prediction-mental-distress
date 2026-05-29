@@ -2,6 +2,7 @@ import serial
 import time
 import os
 from dotenv import load_dotenv
+import sys
 
 load_dotenv()
 
@@ -17,6 +18,7 @@ DURATION = 600  # 10 minutes
 CHUNK_SIZE = 4096
 
 
+sys.path.insert(0, os.path.dirname(__file__)) #important for run_both.py to find this module
 from firebase_upload import fetch_user_id, fetch_user_details
 
 # ---------------- USER INFO ----------------
