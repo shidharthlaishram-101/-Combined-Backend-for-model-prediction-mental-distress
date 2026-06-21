@@ -66,7 +66,8 @@ if __name__ == '__main__':
     cleaned_csv = BASE_DIR / 'data' / 'cleaned_output.csv'
 
     print('\nSTEP 2 - Convert TXT to CSV')
-    anxiety_converter.convert_and_clean_txt(str(input_file), str(cleaned_csv))
+    if not anxiety_converter.convert_and_clean_txt(str(input_file), str(cleaned_csv)):
+        raise SystemExit(1)
 
     print('\nSTEP 3 - Preprocess for anxiety')
     anxiety_processed = anxiety_preprocess.preprocess_data(
