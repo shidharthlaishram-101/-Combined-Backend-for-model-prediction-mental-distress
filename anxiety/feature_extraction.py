@@ -6,7 +6,7 @@ import os
 
 # WESAD dataset sampling rate is 700. 
 # Update this if your Arduino sampling rate is different!
-FS = 700 
+FS = 32 
 WINDOW_SEC = 60
 STEP_SEC = 30
 
@@ -47,6 +47,10 @@ def extract_features(df, output_path='data/processed/features.csv'):
     
     WINDOW_SIZE = FS * WINDOW_SEC
     STEP_SIZE = FS * STEP_SEC
+
+    print(f"Total samples: {min(len(ecg_signal), len(eda_signal))}")
+    print(f"Window size needed: {WINDOW_SIZE}")
+    print(f"Windows extracted: will count after loop...")
     
     rows = []
     n = min(len(ecg_signal), len(eda_signal))
@@ -78,6 +82,8 @@ def extract_features(df, output_path='data/processed/features.csv'):
         }
         rows.append(row_dict)
         
+    print(f"Windows extracted: {len(rows)}")
+
     features_df = pd.DataFrame(rows)
     
     if features_df.empty:
